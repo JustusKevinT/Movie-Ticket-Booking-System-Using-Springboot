@@ -35,7 +35,7 @@ public class ShowService {
 
 	@Autowired
 	private ShowRepository showRepository;
-	
+
 	@Autowired
 	private ShowSeatRepository showSeatRepository;
 
@@ -55,11 +55,11 @@ public class ShowService {
 		// Check if a show with the same time, date, movie, and theater already exists
 		Optional<Show> showObject = showRepository.findByShowTimeAndShowDateAndMovieAndTheater(
 				showRequestDTO.getShowTime(), showRequestDTO.getShowDate(), movieObject, theaterObject);
-		
-		if(showObject.isPresent()) {
+
+		if (showObject.isPresent()) {
 			throw new ShowAlreadyExistException();
 		}
-		
+
 		// Set movie and theater objects to the show
 		showDTOConvertedObject.setMovie(movieObject);
 		showDTOConvertedObject.setTheater(theaterObject);
@@ -82,12 +82,13 @@ public class ShowService {
 		if (showOptionalObject.isEmpty()) {
 			throw new ShowDoesNotExistException();
 		}
-		
-		Boolean isShowExist = showSeatRepository.getIsShowExist(showSeatRequestDTO.getShowId()) > 0 ? Boolean.TRUE : Boolean.FALSE;
-		if(isShowExist) {
+
+		Boolean isShowSeatExist = showSeatRepository.getIsShowSeatExist(showSeatRequestDTO.getShowId()) > 0 ? Boolean.TRUE
+				: Boolean.FALSE;
+		if (isShowSeatExist) {
 			throw new SeatAlreadyAssociatedException();
 		}
-		
+
 		Show showObject = showOptionalObject.get();
 		Theater theaterObject = showObject.getTheater();
 		List<TheaterSeat> theaterSeatList = theaterObject.getTheaterSeatList();
@@ -109,20 +110,20 @@ public class ShowService {
 		showRepository.save(showObject);
 		return "Show seats are associated successfully";
 	}
-	
+
 	public String updateShowSeat(ShowSeatRequestDTO showSeatRequestDTO) {
 		Optional<Show> showOptionalObject = showRepository.findById(showSeatRequestDTO.getShowId());
-		if(showOptionalObject.isEmpty()) {
+		if (showOptionalObject.isEmpty()) {
 			throw new ShowDoesNotExistException();
 		}
-		
+
 		Show showObject = showOptionalObject.get();
 		List<ShowSeat> showSeatList = showObject.getShowSeatList();
-		
-		for(ShowSeat showSeatObject : showSeatList) {
-			if(showSeatObject.getSeatType().equals(SeatType.EXECUTIVE)) {
+
+		for (ShowSeat showSeatObject : showSeatList) {
+			if (showSeatObject.getSeatType().equals(SeatType.EXECUTIVE)) {
 				showSeatObject.setSeatPrice(showSeatRequestDTO.getExecutiveSeatPrice());
-			} else if(showSeatObject.getSeatType().equals(SeatType.PREMIUM)) {
+			} else if (showSeatObject.getSeatType().equals(SeatType.PREMIUM)) {
 				showSeatObject.setSeatPrice(showSeatRequestDTO.getPremiumSeatPrice());
 			}
 		}

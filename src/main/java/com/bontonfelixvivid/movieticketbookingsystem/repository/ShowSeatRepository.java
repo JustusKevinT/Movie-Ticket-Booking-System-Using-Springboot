@@ -9,6 +9,6 @@ import com.bontonfelixvivid.movieticketbookingsystem.entity.ShowSeat;
 public interface ShowSeatRepository extends JpaRepository<ShowSeat, Integer> {
 
 	@Query(value = "select case when count(*) > 0 then true else false end from `show_seat` where show_id = :showId", nativeQuery = true)
-	public Long getIsShowExist(@Param("showId") Integer showId);
+	public Long getIsShowSeatExist(@Param("showId") Integer showId);
 
 }
